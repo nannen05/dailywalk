@@ -5,6 +5,7 @@ import { firebase, auth } from '../firebase';
 import * as actions from "../store/actions";
 
 import Home from "./Home";
+import Chart from "./Chart";
 import Login from "./Login";
 import Register from "./Register";
 import Dashboard from "./Dashboard";
@@ -80,6 +81,7 @@ class App extends Component {
         <BrowserRouter>
             <Switch>
                 <Route exact path="/" component={Home}></Route>
+                <Route exact path="/chart" component={Chart}></Route>
                 <PublicRoute authed={this.state.authed} path='/login' component={Login}/>
                 <PublicRoute authed={this.state.authed} path='/register' component={Register} />>
                 <PrivateRoute authed={this.state.authed} path='/dashboard' component={Dashboard} />
