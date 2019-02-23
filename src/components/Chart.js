@@ -65,6 +65,14 @@ class Chart extends Component {
           .attr("height", (d, i) => this.scaleHeight(d))
           //.attr("height", this.scale(d))
           .attr("fill", "green")
+
+        svg.selectAll('text')
+            .data(data)
+            .enter()
+            .append('text')
+            .text((d) => d)
+            .attr("x", (d, i) => i * (w / data.length))
+            .attr('y', (d, i) => (this.state.height - (this.scaleHeight(d) - 15)))
       }
 
     render() {
