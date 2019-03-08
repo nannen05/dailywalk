@@ -10,8 +10,10 @@ class Chart extends Component {
         this.state = {
             height: 300, 
             width: 700,
-            data: [12, 55, 6, 6, 9, 10, 15, 30],
-            largestNumber: null
+            data: [8, 12, 6, 7.5, 9, 15, 17, 22,4,10, 12],
+            goal: 15,
+            largestNumber: null,
+            heightTreshold: 20,
         }
     }
 
@@ -34,15 +36,23 @@ class Chart extends Component {
         
           console.log(d3Scale(length))
 
-          return d3Scale(length)
+          return d3Scale(length) - this.state.heightTreshold
       }
 
       drawChart() {
-        const data = [12, 55, 6, 6, 9, 10, 15, 30];
+        const data = this.state.data
 
         const largestNumber = Math.max(...data)
 
         console.log(this.state.largestNumber)
+
+        const goalLineData = [ { "x": 0,   "y": this.state.height - this.scaleHeight(this.state.goal)}, 
+                               { "x": this.state.width, "y": this.state.height - this.scaleHeight(this.state.goal)}];
+
+        const lineFunction = d3.line()
+                             .x(function(d) { return d.x; })
+                             .y(function(d) { return d.y; })
+                             .curve(d3.curveLinear);  
 
         const h = this.state.height
         const w = this.state.width
@@ -51,8 +61,8 @@ class Chart extends Component {
         .append("svg")
         .attr("width", this.state.width)
         .attr("height", this.state.height)
-        //.style("margin-left", 100);
-                      
+
+        // Line Chart              
         svg.selectAll("rect")
           .data(data)
           .enter()
@@ -65,14 +75,25 @@ class Chart extends Component {
           .attr("height", (d, i) => this.scaleHeight(d))
           //.attr("height", this.scale(d))
           .attr("fill", "green")
+          .style("stroke", 'white')
+          .style("stroke-width", 1);
 
+        // Line Chart Text
         svg.selectAll('text')
             .data(data)
             .enter()
             .append('text')
             .text((d) => d)
-            .attr("x", (d, i) => i * (w / data.length))
-            .attr('y', (d, i) => (this.state.height - (this.scaleHeight(d) - 15)))
+            .attr("x", (d, i) => i * (w / data.length) + 5)
+            .attr('y', (d, i) => (this.state.height - (this.scaleHeight(d))))
+            .style('stroke', 'white')
+
+        // Goal Line Target 
+        svg.insert("path", "rect")
+            .attr("d", lineFunction(goalLineData))
+            .attr("stroke", "grey")
+            .attr("stroke-width", 1)
+            .attr("fill", "none");
       }
 
     render() {
